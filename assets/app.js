@@ -3,7 +3,7 @@
    흐름: 이름 선택 → (질문 → 참고자료)×5 → Q6 → 제출 → 완료
    - 질문에 답을 써야 다음(참고자료)으로 진행 (답 쓴 뒤에만 자료 공개)
    - 참고자료: 이미지 먼저, 아래로 스크롤하며 원문 텍스트(assets/materials/qN.txt) 읽기
-   - 제출마다 새 행 insert. 마지막 제출이 최종. 초안은 저장하지 않음(항상 빈 상태로 시작).
+   - 제출마다 새 행 insert. 마지막 제출이 최종. 초안은 '이름별'로 이 기기에 저장(이름 선택 시 복원).
    ============================================================ */
 (function () {
   "use strict";
@@ -63,11 +63,19 @@
   var LAST = STEPS.length - 1;
 
   var state = { name: "", answers: {} };
-  // 답안을 브라우저에 저장하지 않는다 → 열 때마다 항상 빈 상태로 시작.
-  // (한 세션 안에서 뒤로/앞으로 이동·수정은 메모리로 유지)
-  // 이전 버전이 남긴 초안이 있으면 정리.
-  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
-  function save() { /* no-op: 초안을 로컬에 저장하지 않음 */ }
+  // 답안은 '이름별'로 이 기기(브라우저)에 저장한다.
+  //  - 시작 화면은 항상 빈 상태(이름 고르기 전엔 아무 답도 안 보임)
+  //  - 자기 이름을 다시 누르면 그 이름으로 쓰던 답이 복원됨 (같은 기기 한정)
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {} // 옛 전역 초안 키 정리
+  function draftKey(name) { return STORE_KEY + "-" + encodeURIComponent(name); }
+  function loadDraft(name) {
+    try { var s = JSON.parse(localStorage.getItem(draftKey(name)) || "null"); return (s && s.answers) || {}; }
+    catch (e) { return {}; }
+  }
+  function save() {
+    if (!state.name) return;
+    try { localStorage.setItem(draftKey(state.name), JSON.stringify({ answers: state.answers })); } catch (e) {}
+  }
 
   var app = document.getElementById("app");
   var idx = 0;
@@ -126,7 +134,7 @@
       var b = n("button", {
         class: "name-btn fade-up" + (state.name === nm ? " selected" : ""),
         text: nm + "님",
-        onclick: function () { state.name = nm; save(); go(1); }
+        onclick: function () { state.name = nm; state.answers = loadDraft(nm); go(1); }
       });
       b.style.animationDelay = (0.18 + i * 0.05) + "s";
       grid.appendChild(b);
