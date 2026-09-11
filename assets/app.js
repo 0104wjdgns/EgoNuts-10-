@@ -1,8 +1,9 @@
 /* ============================================================
-   리더스클럽 6기 · 9월 '이기심' — 참가자 발제문 폼
-   - 한 화면 한 질문(스텝형), 뒤로/앞으로 상시 노출
-   - 답 입력 후 '다음' → 자료(📎) 그 자리에 자동 노출 → 다시 '다음' → 다음 질문
-   - 제출마다 새 행 insert. 마지막 제출이 최종. 초안은 로컬에 자동 저장.
+   리더스클럽 6기 · 9월 '사랑과 이기심' — 참가자 발제문 폼
+   흐름: 이름 선택 → (질문 → 참고자료)×5 → Q6 → 제출 → 완료
+   - 질문에 답을 써야 다음(참고자료)으로 진행 (답 쓴 뒤에만 자료 공개)
+   - 참고자료: 이미지 먼저, 아래로 스크롤하며 원문 텍스트(assets/materials/qN.txt) 읽기
+   - 제출마다 새 행 insert. 마지막 제출이 최종. 초안은 로컬 자동 저장.
    ============================================================ */
 (function () {
   "use strict";
@@ -11,72 +12,68 @@
   var ROUND = CFG.ROUND || "2026-09";
   var STORE_KEY = "rc-" + ROUND;
 
-  // 질문 문구는 발제문 확정본 그대로.
+  var NAMES = ["김태상", "김지연", "김가람", "정미진", "이환규", "서재은", "송정훈"];
+
   var QUESTIONS = [
     {
-      key: "q1",
-      text: "한 문장으로 적어본다면, 당신에게 사랑이란 무엇인가요?",
+      key: "q1", text: "한 문장으로 적어본다면, 당신에게 사랑이란 무엇인가요?",
       hint: "한 문장. 당신만의 정의를 내려봐요.",
       fields: [{ name: "q1", placeholder: "사랑이란 …" }],
-      material: { label: '프롬 — "사랑은 기술이다"', img: "assets/materials/q1.jpg" }
+      material: { img: "assets/materials/q1.jpg", txt: "assets/materials/q1.txt" }
     },
     {
-      key: "q2",
-      text: "두 사람 사이, 당신이 그리는 이상적인 사랑의 관계는 어떤 모습인가요?",
+      key: "q2", text: "두 사람 사이, 당신이 그리는 이상적인 사랑의 관계는 어떤 모습인가요?",
       fields: [{ name: "q2", placeholder: "" }],
-      material: { label: "존속의 형태 — 개체성을 보존한 합일", img: "assets/materials/q2.jpg" }
+      material: { img: "assets/materials/q2.jpg", txt: "assets/materials/q2.txt" }
     },
     {
-      key: "q3",
-      text: "사랑 안에서 이기심(자기애)은 당신에게 무엇인가요?",
+      key: "q3", text: "사랑 안에서 이기심(자기애)은 당신에게 무엇인가요?",
       fields: [{ name: "q3", placeholder: "" }],
-      material: { label: "이기심 ≠ 자기애", img: "assets/materials/q3.jpg" }
+      material: { img: "assets/materials/q3.jpg", txt: "assets/materials/q3.txt" }
     },
     {
-      key: "q4",
-      text: "두 사람은 언제 '우리'가 되고, 또 언제 '나'와 '당신'으로 남나요?",
+      key: "q4", text: "두 사람은 언제 '우리'가 되고, 또 언제 '나'와 '당신'으로 남나요?",
       fields: [{ name: "q4", placeholder: "" }],
-      material: { label: "자본주의 현대사회 속 부부 관계", img: "assets/materials/q4.jpg" }
+      material: { img: "assets/materials/q4.jpg", txt: "assets/materials/q4.txt" }
     },
     {
-      key: "q5",
-      text: "이기심(자기애)은 연인 관계에서 —",
+      key: "q5", text: "이기심(자기애)은 연인 관계에서 —",
       fields: [
         { name: "q5_1", label: "① 그것은 어떻게 드러나나요? (관찰)", placeholder: "" },
         { name: "q5_2", label: "② 사랑을 저해하나요, 아니면 오히려 사랑을 근원에서 가능하게 하나요? (판단)", placeholder: "" }
       ],
-      material: { label: "사랑에 필요한 것 · 자기애 · 자기탐구", img: "assets/materials/q5.jpg" }
+      material: { img: "assets/materials/q5.jpg", txt: "assets/materials/q5.txt" }
     },
     {
-      key: "q6",
-      text: "사랑과 이기심을 지나온 지금, 당신 안에 새로 생긴 '나만의 질문' 하나는 무엇인가요? (확산)",
+      key: "q6", text: "사랑과 이기심을 지나온 지금, 당신 안에 새로 생긴 '나만의 질문' 하나는 무엇인가요? (확산)",
       hint: "결론이 아니라, 당신에게 남는 질문.",
       fields: [{ name: "q6", placeholder: "" }],
       material: null
     }
   ];
-  var N = QUESTIONS.length;
+  var NQ = QUESTIONS.length;
 
-  var state = { name: "", answers: {}, revealed: {} };
+  // 스텝: intro → (질문 → 자료)... → done
+  var STEPS = [{ t: "intro" }];
+  QUESTIONS.forEach(function (q, i) {
+    STEPS.push({ t: "q", i: i });
+    if (q.material) STEPS.push({ t: "m", i: i });
+  });
+  STEPS.push({ t: "done" });
+  var LAST = STEPS.length - 1;
+
+  var state = { name: "", answers: {} };
   try {
     var saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
-    if (saved) {
-      state.name = saved.name || "";
-      state.answers = saved.answers || {};
-      state.revealed = saved.revealed || {};
-    }
+    if (saved) { state.name = saved.name || ""; state.answers = saved.answers || {}; }
   } catch (e) {}
-
   function save() {
-    try {
-      localStorage.setItem(STORE_KEY, JSON.stringify({
-        name: state.name, answers: state.answers, revealed: state.revealed
-      }));
-    } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ name: state.name, answers: state.answers })); } catch (e) {}
   }
 
   var app = document.getElementById("app");
-  var idx = 0; // 0 = 인트로, 1..N = 질문, N+1 = 완료
+  var idx = 0;
+  var textCache = {};
 
   // --- DOM 헬퍼 ---
   function n(tag, props, kids) {
@@ -92,50 +89,60 @@
     (kids || []).forEach(function (c) { if (c) e.appendChild(c); });
     return e;
   }
-
-  function autoGrow(ta) {
-    ta.style.height = "auto";
-    ta.style.height = (ta.scrollHeight) + "px";
+  function autoGrow(ta) { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
   }
+  function fmt(s) { return escapeHtml(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"); }
 
   function transition(render) {
     app.classList.add("fade-out");
     setTimeout(function () {
-      app.innerHTML = "";
-      app.className = "app";
-      render();
-      window.scrollTo(0, 0);
-    }, 160);
+      app.innerHTML = ""; app.className = "app";
+      render(); window.scrollTo(0, 0);
+    }, 170);
   }
-  function go(i) { idx = i; transition(renderCurrent); }
+  function go(i) { idx = Math.max(0, Math.min(LAST, i)); transition(renderCurrent); }
   function renderCurrent() {
-    if (idx <= 0) return renderIntro();
-    if (idx <= N) return renderQuestion(idx - 1);
+    var s = STEPS[idx];
+    if (s.t === "intro") return renderIntro();
+    if (s.t === "q") return renderQuestion(s.i);
+    if (s.t === "m") return renderMaterial(s.i);
     return renderDone();
   }
 
-  // --- 인트로 ---
-  var NAMES = ["김태상", "김지연", "김가람", "정미진", "이환규", "서재은", "송정훈"];
+  function progress(label, pct) {
+    var span = n("span"); span.style.width = pct + "%";
+    return n("div", { class: "progress" }, [
+      n("div", { class: "count", text: label }),
+      n("div", { class: "bar" }, [span])
+    ]);
+  }
 
+  // --- 인트로 ---
   function renderIntro() {
     var grid = n("div", { class: "name-grid" });
-    NAMES.forEach(function (nm) {
-      grid.appendChild(n("button", {
-        class: "name-btn" + (state.name === nm ? " selected" : ""),
+    NAMES.forEach(function (nm, i) {
+      var b = n("button", {
+        class: "name-btn fade-up" + (state.name === nm ? " selected" : ""),
         text: nm + "님",
         onclick: function () { state.name = nm; save(); go(1); }
-      }));
+      });
+      b.style.animationDelay = (0.18 + i * 0.05) + "s";
+      grid.appendChild(b);
     });
 
     app.appendChild(n("div", { class: "center" }, [
-      n("p", { class: "kicker", text: "리더스클럽 6기 · 9월" }),
-      n("p", { class: "lead", text: "사랑과 이기심" }),
-      n("div", { class: "intro-core" }, [
+      n("p", { class: "kicker fade-up", text: "리더스클럽 6기 · 9월" }),
+      n("p", { class: "lead fade-up", text: "사랑과 이기심" }),
+      n("div", { class: "intro-core fade-up" }, [
         n("p", { class: "core-label", text: "핵심 질문" }),
         n("p", { class: "core-q", html: "이기심 혹은 자기애는 사랑을 저해하는가?<br/>오히려 사랑을 가능하게 하는가?" })
       ]),
-      n("p", { class: "sub", html: "핵심 질문에 답하기 위한 질문들을 고민해보고,<br/>발제문 후반부에 핵심 질문에 답해보는 방식으로 따라가보겠습니다!" }),
-      n("p", { class: "pick-label", text: "당신의 이름을 선택해 주세요" }),
+      n("p", { class: "sub fade-up", html: "핵심 질문에 답하기 위한 질문들을 고민해보고,<br/>발제문 후반부에 핵심 질문에 답해보는 방식으로 따라가보겠습니다!" }),
+      n("p", { class: "pick-label fade-up", text: "당신의 이름을 선택해 주세요" }),
       grid
     ]));
   }
@@ -143,110 +150,125 @@
   // --- 질문 ---
   function renderQuestion(qi) {
     var q = QUESTIONS[qi];
-    var pct = Math.round(((qi + 1) / N) * 100);
+    var pct = Math.round((idx / LAST) * 100);
+    var isLast = !q.material; // Q6
 
-    var progress = n("div", { class: "progress" }, [
-      n("div", { class: "count", text: "질문 " + (qi + 1) + " / " + N }),
-      n("div", { class: "bar" }, [ (function () { var s = n("span"); s.style.width = pct + "%"; return s; })() ])
-    ]);
+    var nudge = n("p", { class: "nudge", text: "먼저 당신의 생각을 한 줄이라도 적어 주세요." });
+    nudge.style.display = "none";
 
-    var block = n("div", {}, [ n("p", { class: "question", text: q.text }) ]);
+    var block = n("div", { class: "qblock fade-up" }, [ n("p", { class: "question", text: q.text }) ]);
     if (q.hint) block.appendChild(n("p", { class: "hint", text: q.hint }));
-
     q.fields.forEach(function (f) {
       if (f.label) block.appendChild(n("label", { class: "field-label", text: f.label }));
       var ta = n("textarea", { rows: "2", placeholder: f.placeholder || "" });
       ta.value = state.answers[f.name] || "";
       ta.addEventListener("input", function () {
-        state.answers[f.name] = ta.value; save(); autoGrow(ta);
+        state.answers[f.name] = ta.value; save(); autoGrow(ta); nudge.style.display = "none";
       });
       block.appendChild(ta);
       setTimeout(function () { autoGrow(ta); }, 0);
     });
+    block.appendChild(nudge);
 
-    // 자료: 이미 노출된 경우에만 표시
-    if (q.material && state.revealed[q.key]) block.appendChild(buildMaterial(q.material));
+    var back = n("button", { class: "btn-back", text: "← 뒤로", onclick: function () { go(idx - 1); } });
+    var next = n("button", { class: "btn-next", text: isLast ? "제출하기" : "다음 →", onclick: function () {
+      if (isLast) { submit(); return; }
+      var filled = q.fields.some(function (f) { return (state.answers[f.name] || "").trim().length > 0; });
+      if (!filled) { nudge.style.display = "block"; return; }
+      go(idx + 1);
+    } });
 
-    var backBtn = n("button", { class: "btn-back", text: "← 뒤로", onclick: function () { go(idx - 1); } });
-    var isLast = qi === N - 1;
-    var nextBtn = n("button", { class: "btn-next", text: isLast ? "제출하기" : "다음 →", onclick: function () { onNext(qi); } });
-
-    app.appendChild(progress);
+    app.appendChild(progress("질문 " + (qi + 1) + " / " + NQ, pct));
     app.appendChild(block);
-    app.appendChild(n("div", { class: "nav" }, [ backBtn, nextBtn ]));
+    app.appendChild(n("div", { class: "nav" }, [back, next]));
   }
 
-  function buildMaterial(m) {
-    var wrap = n("div", { class: "material" }, [
-      n("p", { class: "material-label", html: '<span class="clip">📎</span>' + escapeHtml(m.label) })
-    ]);
-    if (m.img) {
-      var img = n("img", { src: m.img, alt: m.label });
-      var ph = n("div", { class: "material-placeholder", text: "자료 이미지가 아직 없습니다. (진행자가 넣는 자리)" });
-      ph.style.display = "none";
-      img.addEventListener("error", function () { img.style.display = "none"; ph.style.display = "block"; });
-      wrap.appendChild(img);
-      wrap.appendChild(ph);
-    }
-    return wrap;
+  // --- 참고 자료 (이미지 먼저, 스크롤하며 텍스트) ---
+  function renderMaterial(qi) {
+    var m = QUESTIONS[qi].material;
+    var pct = Math.round((idx / LAST) * 100);
+
+    var img = n("img", { class: "m-img", src: m.img, alt: "질문 " + (qi + 1) + " 참고 자료 이미지" });
+    img.addEventListener("load", function () { img.classList.add("shown"); });
+    img.addEventListener("error", function () { img.style.display = "none"; });
+    setTimeout(function () { if (img.complete && img.naturalWidth) img.classList.add("shown"); }, 40);
+
+    var textWrap = n("div", { class: "m-text" }, [ n("p", { class: "m-loading", text: "자료를 불러오는 중…" }) ]);
+
+    var back = n("button", { class: "btn-back", text: "← 뒤로", onclick: function () { go(idx - 1); } });
+    var next = n("button", { class: "btn-next", text: "다음 →", onclick: function () { go(idx + 1); } });
+
+    app.appendChild(progress("질문 " + (qi + 1) + " · 참고 자료", pct));
+    app.appendChild(n("div", { class: "m-imgwrap fade-up" }, [img]));
+    app.appendChild(n("hr", { class: "gold-rule" }));
+    app.appendChild(textWrap);
+    app.appendChild(n("div", { class: "nav" }, [back, next]));
+
+    loadText(m.txt, function (parsed, err) {
+      textWrap.innerHTML = "";
+      if (err || !parsed) { textWrap.appendChild(n("p", { class: "m-loading", text: "(자료 텍스트를 불러오지 못했어요)" })); return; }
+      renderText(textWrap, parsed);
+    });
   }
 
-  function onNext(qi) {
-    var q = QUESTIONS[qi];
-    var filled = q.fields.some(function (f) { return (state.answers[f.name] || "").trim().length > 0; });
-
-    // 자료가 있고 아직 안 열렸고 답을 쓴 상태 → 자료 자동 노출(그 자리에서). 이동 안 함.
-    if (q.material && !state.revealed[q.key] && filled) {
-      state.revealed[q.key] = true; save();
-      transition(function () { renderQuestion(qi); });
-      return;
-    }
-    if (qi === N - 1) { submit(); return; }
-    go(idx + 1);
+  function loadText(url, cb) {
+    if (textCache[url]) { cb(textCache[url]); return; }
+    fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function (t) { var p = parseText(t); textCache[url] = p; cb(p); })
+      .catch(function (e) { cb(null, e); });
+  }
+  function parseText(text) {
+    var lines = text.replace(/\r/g, "").split("\n").map(function (s) { return s.trim(); }).filter(function (s) { return s.length; });
+    var title = lines.shift() || "";
+    var blocks = lines.map(function (line) {
+      if (/^—/.test(line)) return { t: "cite", text: line.replace(/^—\s*/, "") };
+      if (/^["“]/.test(line)) return { t: "quote", text: line };
+      return { t: "p", text: line };
+    });
+    return { title: title, blocks: blocks };
+  }
+  function renderText(wrap, parsed) {
+    if (parsed.title) wrap.appendChild(n("h2", { class: "m-title fade-up", text: parsed.title }));
+    parsed.blocks.forEach(function (b, i) {
+      var el;
+      if (b.t === "quote") el = n("blockquote", { class: "m-quote fade-up", html: fmt(b.text) });
+      else if (b.t === "cite") el = n("p", { class: "m-cite fade-up", text: "— " + b.text });
+      else el = n("p", { class: "m-p fade-up", html: fmt(b.text) });
+      el.style.animationDelay = Math.min(0.45, 0.06 + i * 0.04) + "s";
+      wrap.appendChild(el);
+    });
   }
 
   // --- 제출 ---
   function submit() {
     transition(function () {
-      app.appendChild(n("div", { class: "center" }, [
-        n("p", { class: "lead", text: "제출 중…" })
-      ]));
+      app.appendChild(n("div", { class: "center" }, [ n("p", { class: "lead", text: "제출 중…" }) ]));
     });
-
+    var a = state.answers;
     var payload = {
-      round: ROUND,
-      participant_name: state.name,
-      q1: nn(state.answers.q1), q2: nn(state.answers.q2), q3: nn(state.answers.q3),
-      q4: nn(state.answers.q4), q5_1: nn(state.answers.q5_1), q5_2: nn(state.answers.q5_2),
-      q6: nn(state.answers.q6)
+      round: ROUND, participant_name: state.name,
+      q1: nn(a.q1), q2: nn(a.q2), q3: nn(a.q3), q4: nn(a.q4),
+      q5_1: nn(a.q5_1), q5_2: nn(a.q5_2), q6: nn(a.q6)
     };
-
     fetch(CFG.SUPABASE_URL + "/rest/v1/responses", {
       method: "POST",
       headers: {
-        "apikey": CFG.SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + CFG.SUPABASE_ANON_KEY,
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal"
+        "apikey": CFG.SUPABASE_ANON_KEY, "Authorization": "Bearer " + CFG.SUPABASE_ANON_KEY,
+        "Content-Type": "application/json", "Prefer": "return=minimal"
       },
       body: JSON.stringify(payload)
     }).then(function (res) {
       if (!res.ok) return res.text().then(function (t) { throw new Error("HTTP " + res.status + " " + t); });
-      go(N + 1);
-    }).catch(function (e) {
-      renderError(e);
-    });
+      go(LAST);
+    }).catch(function (e) { renderError(e); });
   }
-
   function renderError(e) {
     transition(function () {
       app.appendChild(n("div", { class: "center" }, [
         n("p", { class: "lead", text: "제출에 실패했어요" }),
         n("p", { class: "sub", text: "잠시 뒤 다시 시도해 주세요. 작성한 답은 이 기기에 저장돼 있어요." }),
         n("p", { class: "error", text: String(e && e.message ? e.message : e) }),
-        n("div", { class: "nav" }, [
-          n("button", { class: "btn-next", text: "다시 제출", onclick: submit })
-        ])
+        n("div", { class: "nav" }, [ n("button", { class: "btn-next", text: "다시 제출", onclick: submit }) ])
       ]));
     });
   }
@@ -258,18 +280,18 @@
     ph.style.display = "none";
     img.addEventListener("error", function () { img.style.display = "none"; ph.style.display = "flex"; });
     return n("div", { class: "book" }, [
-      n("div", { class: "cover" }, [ img, ph ]),
+      n("div", { class: "cover" }, [img, ph]),
       n("p", { class: "book-title", text: "《" + title + "》" })
     ]);
   }
-
   function renderDone() {
     app.appendChild(n("div", { class: "center" }, [
-      n("p", { class: "kicker", text: state.name + " 님" }),
-      n("p", { class: "lead", text: "제출 완료" }),
-      n("p", { class: "closing", html: "이것으로 9월 리더스클럽 활동 《사랑과 이기심》 토론을 마치겠습니다!<br/>함께 자리해주셔서 감사합니다!" }),
-      n("p", { class: "books-label", text: "추천 도서 · 에리히 프롬" }),
-      n("div", { class: "books" }, [
+      n("p", { class: "kicker fade-up", text: state.name + " 님" }),
+      n("p", { class: "lead fade-up", text: "제출 완료" }),
+      n("p", { class: "closing fade-up", html: "이것으로 9월 리더스클럽 활동 《사랑과 이기심》 토론을 마치겠습니다!<br/>함께 자리해주셔서 감사합니다!" }),
+      n("hr", { class: "gold-rule" }),
+      n("p", { class: "books-label fade-up", text: "추천 도서 · 에리히 프롬" }),
+      n("div", { class: "books fade-up" }, [
         bookCard("assets/books/love.jpg", "사랑의 기술"),
         bookCard("assets/books/being.jpg", "존재의 기술")
       ]),
@@ -281,15 +303,6 @@
   }
 
   function nn(v) { v = (v || "").trim(); return v.length ? v : null; }
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
 
-  // 시작
-  if (!CFG.SUPABASE_URL || CFG.SUPABASE_URL.indexOf("YOUR-PROJECT") !== -1) {
-    // 설정 전에도 화면은 보이도록: 인트로부터 렌더 (제출 시에만 에러)
-  }
   renderCurrent();
 })();
