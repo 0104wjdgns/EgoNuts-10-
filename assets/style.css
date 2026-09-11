@@ -100,6 +100,13 @@ input.name-input { font-size: 1.3rem; font-weight: 400; padding-bottom: 14px; }
 }
 
 /* ---- 참고 자료 페이지 ---- */
+.m-source { display: flex; gap: 16px; align-items: center; margin-top: 2px; }
+.m-source-cover { width: 96px; flex: none; display: block; border-radius: 3px; border: 1px solid var(--gold-soft); }
+.m-source-meta { min-width: 0; }
+.m-source-title { font-size: 1.16rem; font-weight: 600; line-height: 1.35; margin: 0; }
+.m-source-title span { display: block; margin-top: 4px; font-size: 0.9rem; font-weight: 400; font-style: italic; color: var(--ink-soft); }
+.m-source-by { margin: 8px 0 0; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em; color: var(--gold); }
+.m-source-note { margin: 20px 0 0; font-size: 1rem; font-weight: 400; line-height: 1.7; color: var(--ink); }
 .m-imgwrap { margin-top: 2px; }
 .m-img {
   display: block; width: 100%; max-height: 76vh; object-fit: contain;

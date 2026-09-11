@@ -19,7 +19,16 @@
       key: "q1", text: "한 문장으로 적어본다면, 당신에게 사랑이란 무엇인가요?",
       hint: "한 문장. 당신만의 정의를 내려봐요.",
       fields: [{ name: "q1", placeholder: "사랑이란 …" }],
-      material: { img: "assets/materials/q1.jpg", txt: "assets/materials/q1.txt" }
+      material: {
+        img: "assets/materials/q1.jpg", txt: "assets/materials/q1.txt",
+        source: {
+          cover: "assets/books/love.jpg",
+          titleKo: "사랑의 기술",
+          titleEn: "The Art of Loving",
+          by: "Erich Fromm · 1956",
+          note: "이번 토론 발제문은 에리히 프롬의 《사랑의 기술》을 참고했습니다."
+        }
+      }
     },
     {
       key: "q2", text: "두 사람 사이, 당신이 그리는 이상적인 사랑의 관계는 어떤 모습인가요?",
@@ -205,6 +214,18 @@
     var next = n("button", { class: "btn-next", text: "다음 →", onclick: function () { go(idx + 1); } });
 
     app.appendChild(progress("질문 " + (qi + 1) + " · 참고 자료", pct));
+    if (m.source) {
+      var s = m.source;
+      app.appendChild(n("div", { class: "m-source fade-up" }, [
+        n("img", { class: "m-source-cover", src: s.cover, alt: s.titleKo + " 표지" }),
+        n("div", { class: "m-source-meta" }, [
+          n("p", { class: "m-source-title", html: escapeHtml(s.titleKo) + "<span>" + escapeHtml(s.titleEn) + "</span>" }),
+          n("p", { class: "m-source-by", text: s.by })
+        ])
+      ]));
+      app.appendChild(n("p", { class: "m-source-note", text: s.note }));
+      app.appendChild(n("hr", { class: "gold-rule" }));
+    }
     app.appendChild(n("div", { class: "m-imgwrap fade-up" }, [img]));
     app.appendChild(n("hr", { class: "gold-rule" }));
     app.appendChild(textWrap);
