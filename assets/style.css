@@ -71,6 +71,33 @@ html, body {
   font-weight: 400;
 }
 
+/* ---- 이름 선택 버튼 ---- */
+.pick-label {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+  margin: 6px 0 24px;
+}
+.name-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.name-btn {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 15px 18px;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--ink);
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.name-btn:hover { border-color: var(--accent); color: var(--accent); }
+.name-btn.selected { border-color: var(--accent); }
+
 /* ---- 입력 ---- */
 textarea, input[type="text"], input[type="password"] {
   width: 100%;

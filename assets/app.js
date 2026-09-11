@@ -15,26 +15,26 @@
   var QUESTIONS = [
     {
       key: "q1",
-      text: "한 문장으로 — 당신에게 사랑이란?",
+      text: "한 문장으로 적어본다면, 당신에게 사랑이란 무엇인가요?",
       hint: "한 문장. 당신만의 정의를 내려봐요.",
       fields: [{ name: "q1", placeholder: "사랑이란 …" }],
       material: { label: '프롬 — "사랑은 기술이다"', img: "assets/materials/q1.jpg" }
     },
     {
       key: "q2",
-      text: "두 사람 사이 이상적인 사랑의 관계는?",
+      text: "두 사람 사이, 당신이 그리는 이상적인 사랑의 관계는 어떤 모습인가요?",
       fields: [{ name: "q2", placeholder: "" }],
       material: { label: "존속의 형태 — 개체성을 보존한 합일", img: "assets/materials/q2.jpg" }
     },
     {
       key: "q3",
-      text: "사랑 안에서 이기심(자기애)이란 무엇인가?",
+      text: "사랑 안에서 이기심(자기애)은 당신에게 무엇인가요?",
       fields: [{ name: "q3", placeholder: "" }],
       material: { label: "이기심 ≠ 자기애", img: "assets/materials/q3.jpg" }
     },
     {
       key: "q4",
-      text: "둘은 언제 '우리'로, 언제 '나'와 '당신'으로?",
+      text: "두 사람은 언제 '우리'가 되고, 또 언제 '나'와 '당신'으로 남나요?",
       fields: [{ name: "q4", placeholder: "" }],
       material: { label: "자본주의 현대사회 속 부부 관계", img: "assets/materials/q4.jpg" }
     },
@@ -42,14 +42,14 @@
       key: "q5",
       text: "이기심(자기애)은 연인 관계에서 —",
       fields: [
-        { name: "q5_1", label: "① 어떻게 드러나는가? (관찰)", placeholder: "" },
-        { name: "q5_2", label: "② 저해하는가 / 근원적으로 가능케 하는가? (판단)", placeholder: "" }
+        { name: "q5_1", label: "① 그것은 어떻게 드러나나요? (관찰)", placeholder: "" },
+        { name: "q5_2", label: "② 사랑을 저해하나요, 아니면 오히려 사랑을 근원에서 가능하게 하나요? (판단)", placeholder: "" }
       ],
       material: { label: "사랑에 필요한 것 · 자기애 · 자기탐구", img: "assets/materials/q5.jpg" }
     },
     {
       key: "q6",
-      text: "지금, 사랑과 이기심을 지나오며 당신 안에 새로 생긴 '나만의 질문' 하나는? (확산)",
+      text: "사랑과 이기심을 지나온 지금, 당신 안에 새로 생긴 '나만의 질문' 하나는 무엇인가요? (확산)",
       hint: "결론이 아니라, 당신에게 남는 질문.",
       fields: [{ name: "q6", placeholder: "" }],
       material: null
@@ -115,31 +115,25 @@
   }
 
   // --- 인트로 ---
+  var NAMES = ["김태상", "김지연", "김가람", "정미진", "이환규", "서재은", "송정훈"];
+
   function renderIntro() {
-    var input = n("input", {
-      type: "text", class: "name-input", placeholder: "이름 또는 닉네임",
-      maxlength: "40", value: state.name, autocomplete: "off"
+    var grid = n("div", { class: "name-grid" });
+    NAMES.forEach(function (nm) {
+      grid.appendChild(n("button", {
+        class: "name-btn" + (state.name === nm ? " selected" : ""),
+        text: nm + "님",
+        onclick: function () { state.name = nm; save(); go(1); }
+      }));
     });
-    var err = n("p", { class: "error" });
-    err.style.display = "none";
-    function start() {
-      var v = input.value.trim();
-      if (!v) { err.textContent = "이름(또는 닉네임)을 적어주세요."; err.style.display = "block"; input.focus(); return; }
-      state.name = v; save(); go(1);
-    }
-    input.addEventListener("keydown", function (e) { if (e.key === "Enter") start(); });
 
     app.appendChild(n("div", { class: "center" }, [
       n("p", { class: "kicker", text: "리더스클럽 6기 · 9월" }),
       n("p", { class: "lead", text: "이기심" }),
       n("p", { class: "sub", html: "사랑과 이기심을 두고, 여섯 개의 질문에 천천히 답해봅니다.<br/>정답을 맞히는 자리가 아니라, 당신만의 정의·선·태도를 적는 자리예요." }),
-      input,
-      err,
-      n("div", { class: "nav" }, [
-        n("button", { class: "btn-next", text: "시작하기 →", onclick: start })
-      ])
+      n("p", { class: "pick-label", text: "당신의 이름을 선택해 주세요" }),
+      grid
     ]));
-    setTimeout(function () { input.focus(); }, 200);
   }
 
   // --- 질문 ---
