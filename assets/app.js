@@ -252,11 +252,27 @@
   }
 
   // --- 완료 ---
+  function bookCard(src, title) {
+    var img = n("img", { src: src, alt: title });
+    var ph = n("div", { class: "ph", text: "표지 이미지 자리" });
+    ph.style.display = "none";
+    img.addEventListener("error", function () { img.style.display = "none"; ph.style.display = "flex"; });
+    return n("div", { class: "book" }, [
+      n("div", { class: "cover" }, [ img, ph ]),
+      n("p", { class: "book-title", text: "《" + title + "》" })
+    ]);
+  }
+
   function renderDone() {
     app.appendChild(n("div", { class: "center" }, [
       n("p", { class: "kicker", text: state.name + " 님" }),
       n("p", { class: "lead", text: "제출 완료" }),
-      n("p", { class: "sub", html: "고마워요. 잘 담겼습니다.<br/>모임 때 함께 펼쳐볼게요." }),
+      n("p", { class: "closing", html: "이것으로 9월 리더스클럽 활동 《사랑과 이기심》 토론을 마치겠습니다!<br/>함께 자리해주셔서 감사합니다!" }),
+      n("p", { class: "books-label", text: "추천 도서 · 에리히 프롬" }),
+      n("div", { class: "books" }, [
+        bookCard("assets/books/love.jpg", "사랑의 기술"),
+        bookCard("assets/books/being.jpg", "존재의 기술")
+      ]),
       n("div", { class: "nav" }, [
         n("button", { class: "btn-back", text: "← 답 다시 보기 · 수정", onclick: function () { go(1); } })
       ]),

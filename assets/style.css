@@ -251,6 +251,55 @@ button:hover { color: var(--accent); }
   margin-top: 20px;
 }
 
+/* ---- 완료 화면: 마무리 인사 + 추천 도서 ---- */
+.closing {
+  font-size: clamp(1.05rem, 3vw, 1.28rem);
+  font-weight: 500;
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 18px 0 42px;
+}
+.books-label {
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-weight: 500;
+  margin: 0 0 20px;
+}
+.books {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.book { width: 148px; }
+.book .cover {
+  aspect-ratio: 2 / 3;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.book .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.book .cover .ph {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  font-weight: 300;
+  text-align: center;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.book-title {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 13px 0 0;
+}
+
 @media (max-width: 480px) {
   .app { justify-content: flex-start; }
 }
