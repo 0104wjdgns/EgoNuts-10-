@@ -3,7 +3,7 @@
    흐름: 이름 선택 → (질문 → 참고자료)×5 → Q6 → 제출 → 완료
    - 질문에 답을 써야 다음(참고자료)으로 진행 (답 쓴 뒤에만 자료 공개)
    - 참고자료: 이미지 먼저, 아래로 스크롤하며 원문 텍스트(assets/materials/qN.txt) 읽기
-   - 제출마다 새 행 insert. 마지막 제출이 최종. 초안은 로컬 자동 저장.
+   - 제출마다 새 행 insert. 마지막 제출이 최종. 초안은 저장하지 않음(항상 빈 상태로 시작).
    ============================================================ */
 (function () {
   "use strict";
@@ -63,13 +63,11 @@
   var LAST = STEPS.length - 1;
 
   var state = { name: "", answers: {} };
-  try {
-    var saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
-    if (saved) { state.name = saved.name || ""; state.answers = saved.answers || {}; }
-  } catch (e) {}
-  function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ name: state.name, answers: state.answers })); } catch (e) {}
-  }
+  // 답안을 브라우저에 저장하지 않는다 → 열 때마다 항상 빈 상태로 시작.
+  // (한 세션 안에서 뒤로/앞으로 이동·수정은 메모리로 유지)
+  // 이전 버전이 남긴 초안이 있으면 정리.
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  function save() { /* no-op: 초안을 로컬에 저장하지 않음 */ }
 
   var app = document.getElementById("app");
   var idx = 0;
