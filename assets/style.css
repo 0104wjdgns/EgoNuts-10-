@@ -1,0 +1,212 @@
+/* ============================================================
+   리더스클럽 6기 · 9월 '이기심'
+   어둡고 몰입적인 미니멀 — 진한 와인 바탕 / 흰 세리프 / 드문 진녹색
+   무테 · 무장식 · 그림자 없음 · 한 화면 한 질문
+   ============================================================ */
+
+:root {
+  --bg:        #3d0f1c;   /* 진한 와인 */
+  --bg-deep:   #340c18;   /* 가장자리로 갈수록 더 깊게 */
+  --ink:       #f4ece8;   /* 흰 글씨(따뜻한 near-white) */
+  --ink-soft:  rgba(244, 236, 232, 0.60);
+  --ink-faint: rgba(244, 236, 232, 0.32);
+  --line:      rgba(244, 236, 232, 0.14);
+  --accent:    #5f9d78;   /* 드문 진녹색 포인트 */
+  --maxw: 660px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(120% 120% at 50% 0%, var(--bg) 0%, var(--bg-deep) 100%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: "Noto Serif KR", ui-serif, Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+.app {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: clamp(28px, 8vh, 96px) clamp(22px, 6vw, 40px) 96px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.app.fade-out { opacity: 0; transform: translateY(6px); }
+
+/* ---- 공통 텍스트 ---- */
+.kicker {
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin: 0 0 22px;
+  font-weight: 400;
+}
+.question {
+  font-size: clamp(1.5rem, 4.4vw, 2.05rem);
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+.hint {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin: 0 0 30px;
+  font-weight: 300;
+}
+.field-label {
+  display: block;
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+  margin: 26px 0 10px;
+  font-weight: 400;
+}
+
+/* ---- 입력 ---- */
+textarea, input[type="text"], input[type="password"] {
+  width: 100%;
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  border-bottom: 1px solid var(--line);
+  font-family: inherit;
+  font-size: 1.12rem;
+  font-weight: 300;
+  line-height: 1.7;
+  padding: 8px 2px 12px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+textarea { min-height: 92px; overflow: hidden; }
+textarea::placeholder, input::placeholder { color: var(--ink-faint); font-weight: 300; }
+textarea:focus, input:focus { border-bottom-color: var(--accent); }
+
+input.name-input {
+  font-size: 1.3rem;
+  font-weight: 400;
+  padding-bottom: 14px;
+}
+
+/* ---- 자료(📎) 노출 ---- */
+.material {
+  margin-top: 34px;
+  animation: reveal 0.5s ease both;
+}
+@keyframes reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.material-label {
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  margin: 0 0 14px;
+  font-weight: 500;
+}
+.material-label .clip { opacity: 0.85; margin-right: 6px; }
+.material img {
+  display: block;
+  max-width: 100%;
+  border-radius: 2px;
+}
+.material-placeholder {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  font-weight: 300;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---- 진행/버튼 ---- */
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.progress .count {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.progress .bar {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  position: relative;
+}
+.progress .bar span {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 42px;
+}
+button {
+  background: none;
+  border: none;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 8px 2px;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+button:hover { color: var(--accent); }
+.btn-back { color: var(--ink-soft); font-size: 0.98rem; font-weight: 300; }
+.btn-back:hover { color: var(--ink); }
+.btn-next { font-weight: 500; }
+.btn-back[hidden] { visibility: hidden; }
+
+/* ---- 인트로 / 완료 ---- */
+.lead {
+  font-size: clamp(1.7rem, 5vw, 2.3rem);
+  font-weight: 500;
+  line-height: 1.45;
+  margin: 0 0 18px;
+  letter-spacing: -0.01em;
+}
+.sub {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+  line-height: 1.75;
+  margin: 0 0 40px;
+}
+.center { text-align: center; }
+.center .nav { justify-content: center; }
+
+.notice {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+  margin-top: 30px;
+  line-height: 1.7;
+}
+.error {
+  color: #e9a4a4;
+  font-size: 0.95rem;
+  font-weight: 300;
+  margin-top: 20px;
+}
+
+@media (max-width: 480px) {
+  .app { justify-content: flex-start; }
+}
