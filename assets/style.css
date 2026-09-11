@@ -98,6 +98,23 @@ html, body {
 .name-btn:hover { border-color: var(--accent); color: var(--accent); }
 .name-btn.selected { border-color: var(--accent); }
 
+/* ---- 인트로 핵심 질문 ---- */
+.intro-core { margin: 6px 0 26px; }
+.core-label {
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.core-q {
+  font-size: clamp(1.15rem, 3.2vw, 1.42rem);
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0;
+}
+
 /* ---- 입력 ---- */
 textarea, input[type="text"], input[type="password"] {
   width: 100%;

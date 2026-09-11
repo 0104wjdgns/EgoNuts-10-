@@ -129,8 +129,12 @@
 
     app.appendChild(n("div", { class: "center" }, [
       n("p", { class: "kicker", text: "리더스클럽 6기 · 9월" }),
-      n("p", { class: "lead", text: "이기심" }),
-      n("p", { class: "sub", html: "사랑과 이기심을 두고, 여섯 개의 질문에 천천히 답해봅니다.<br/>정답을 맞히는 자리가 아니라, 당신만의 정의·선·태도를 적는 자리예요." }),
+      n("p", { class: "lead", text: "사랑과 이기심" }),
+      n("div", { class: "intro-core" }, [
+        n("p", { class: "core-label", text: "핵심 질문" }),
+        n("p", { class: "core-q", html: "이기심 혹은 자기애는 사랑을 저해하는가?<br/>오히려 사랑을 가능하게 하는가?" })
+      ]),
+      n("p", { class: "sub", html: "핵심 질문에 답하기 위한 질문들을 고민해보고,<br/>발제문 후반부에 핵심 질문에 답해보는 방식으로 따라가보겠습니다!" }),
       n("p", { class: "pick-label", text: "당신의 이름을 선택해 주세요" }),
       grid
     ]));
