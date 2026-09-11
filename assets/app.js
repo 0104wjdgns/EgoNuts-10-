@@ -27,25 +27,25 @@
       material: { img: "assets/materials/q2.jpg", txt: "assets/materials/q2.txt" }
     },
     {
-      key: "q3", text: "사랑 안에서 이기심(자기애)은 당신에게 무엇인가요?",
+      key: "q3", text: "사랑 안에서 이기심 혹은 자기애란 당신에게 무엇인가요?",
       fields: [{ name: "q3", placeholder: "" }],
       material: { img: "assets/materials/q3.jpg", txt: "assets/materials/q3.txt" }
     },
     {
-      key: "q4", text: "두 사람은 언제 '우리'가 되고, 또 언제 '나'와 '당신'으로 남나요?",
+      key: "q4", text: "두 사람은 언제 '우리'가 되고, 또 언제 '나'와 '당신'으로 돌아가나요?",
       fields: [{ name: "q4", placeholder: "" }],
       material: { img: "assets/materials/q4.jpg", txt: "assets/materials/q4.txt" }
     },
     {
-      key: "q5", text: "이기심(자기애)은 연인 관계에서 —",
+      key: "q5", text: "이기심 혹은 자기애는 연인 관계에서 —",
       fields: [
-        { name: "q5_1", label: "① 그것은 어떻게 드러나나요? (관찰)", placeholder: "" },
-        { name: "q5_2", label: "② 사랑을 저해하나요, 아니면 오히려 사랑을 근원에서 가능하게 하나요? (판단)", placeholder: "" }
+        { name: "q5_1", label: "① 어떻게 드러나나요? (관찰)", placeholder: "" },
+        { name: "q5_2", label: "② 사랑을 저해하나요, 아니면 오히려 사랑을 근원적으로 가능하게 하나요? (판단)", placeholder: "" }
       ],
       material: { img: "assets/materials/q5.jpg", txt: "assets/materials/q5.txt" }
     },
     {
-      key: "q6", text: "사랑과 이기심을 지나온 지금, 당신 안에 새로 생긴 '나만의 질문' 하나는 무엇인가요? (확산)",
+      key: "q6", text: "사랑과 이기심을 지나온 지금, 당신 안에 새로 생긴 '나만의 질문' 하나는 무엇인가요?",
       hint: "결론이 아니라, 당신에게 남는 질문.",
       fields: [{ name: "q6", placeholder: "" }],
       material: null
