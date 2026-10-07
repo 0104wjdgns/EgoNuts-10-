@@ -1,4 +1,4 @@
-# 이기심 · 리더스클럽 6기 (9월 발제문 웹앱)
+# 이기심 · 에고너츠 (발제문 웹앱)
 
 참가자가 URL로 열어 6개 질문에 서술형으로 답하는 웹 폼. 답변은 Supabase 저장, 진행자는 비밀번호로 대시보드 열람.
 
@@ -38,7 +38,7 @@ supabase_setup.sql  테이블 + RLS
 window.RC_CONFIG = {
   SUPABASE_URL: "https://xxxx.supabase.co",
   SUPABASE_ANON_KEY: "eyJhbGci...(anon)",
-  ROUND: "2026-09"
+  ROUND: "egonuts-2026-10"
 };
 ```
 > config.js에는 **anon 키만**. service_role 키는 여기 넣지 않는다.

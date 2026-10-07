@@ -1,12 +1,12 @@
 -- ============================================================
--- 리더스클럽 6기 · 9월 '이기심' 발제문 — Supabase 초기 설정
+-- 에고너츠 '이기심' 발제문 — Supabase 초기 설정
 -- Supabase 대시보드 > SQL Editor 에 통째로 붙여넣고 RUN.
 -- ============================================================
 
 create table if not exists public.responses (
   id              uuid primary key default gen_random_uuid(),
   created_at      timestamptz not null default now(),
-  round           text not null default '2026-09',
+  round           text not null default 'egonuts-2026-10',
   participant_name text not null,
   q1   text,
   q2   text,

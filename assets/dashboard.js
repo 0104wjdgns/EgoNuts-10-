@@ -7,7 +7,7 @@
   "use strict";
 
   var CFG = window.RC_CONFIG || {};
-  var ROUND = CFG.ROUND || "2026-09";
+  var ROUND = CFG.ROUND || "egonuts-2026-10";
   var root = document.getElementById("dash");
 
   var QDEF = [
@@ -48,7 +48,7 @@
     pw.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
     root.appendChild(el("div", { class: "gate" }, [
       el("h1", { text: "진행자 대시보드" }),
-      el("p", { text: "이기심 · 리더스클럽 6기 · " + ROUND }),
+      el("p", { text: "이기심 · 에고너츠 · " + ROUND }),
       pw, err,
       el("div", { class: "nav", style: "justify-content:center;margin-top:24px" }, [
         el("button", { class: "btn-next", text: "열기 →", onclick: submit })
@@ -96,7 +96,7 @@
     var people = latestPerName(rows);
     root.innerHTML = "";
 
-    root.appendChild(el("h1", { text: "이기심 · 리더스클럽 6기" }));
+    root.appendChild(el("h1", { text: "이기심 · 에고너츠" }));
     root.appendChild(el("p", { class: "meta", text: ROUND + " · 제출 " + people.length + "명 (총 " + rows.length + "회 제출, 이름별 최신만 표시)" }));
 
     root.appendChild(el("div", { class: "toolbar" }, [
@@ -136,7 +136,7 @@
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
-    a.download = "이기심_리더스클럽6기_" + ROUND + ".csv";
+    a.download = "이기심_에고너츠_" + ROUND + ".csv";
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }

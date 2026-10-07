@@ -31,7 +31,7 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: "server not configured (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)" });
   }
 
-  var round = (body.round || "2026-09").toString();
+  var round = (body.round || "egonuts-2026-10").toString();
   var endpoint = url.replace(/\/$/, "") +
     "/rest/v1/responses?round=eq." + encodeURIComponent(round) +
     "&order=created_at.desc&select=*";

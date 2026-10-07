@@ -1,5 +1,5 @@
 /* ============================================================
-   리더스클럽 6기 · 9월 '사랑과 이기심' — 참가자 발제문 폼
+   에고너츠 '사랑과 이기심' — 참가자 발제문 폼
    흐름: 이름 선택 → (질문 → 참고자료)×5 → Q6 → 제출 → 완료
    - 질문에 답을 써야 다음(참고자료)으로 진행 (답 쓴 뒤에만 자료 공개)
    - 참고자료: 이미지 먼저, 아래로 스크롤하며 원문 텍스트(assets/materials/qN.txt) 읽기
@@ -9,10 +9,10 @@
   "use strict";
 
   var CFG = window.RC_CONFIG || {};
-  var ROUND = CFG.ROUND || "2026-09";
+  var ROUND = CFG.ROUND || "egonuts-2026-10";
   var STORE_KEY = "rc-" + ROUND;
 
-  var NAMES = ["김태상", "김지연", "김가람", "정미진", "이환규", "서재은", "송정훈"];
+  var NAMES = ["참가자 A", "참가자 B", "참가자 C", "참가자 D", "참가자 E", "참가자 F"];
 
   var QUESTIONS = [
     {
@@ -150,7 +150,7 @@
     });
 
     app.appendChild(n("div", { class: "center" }, [
-      n("p", { class: "kicker fade-up", text: "리더스클럽 6기 · 9월" }),
+      n("p", { class: "kicker fade-up", text: "에고너츠" }),
       n("p", { class: "lead fade-up", text: "사랑과 이기심" }),
       n("div", { class: "intro-core fade-up" }, [
         n("p", { class: "core-label", text: "핵심 질문" }),
@@ -315,7 +315,7 @@
     app.appendChild(n("div", { class: "center" }, [
       n("p", { class: "kicker fade-up", text: state.name + " 님" }),
       n("p", { class: "lead fade-up", text: "제출 완료" }),
-      n("p", { class: "closing fade-up", html: "이것으로 9월 리더스클럽 활동 《사랑과 이기심》 토론을 마치겠습니다!<br/>함께 자리해주셔서 감사합니다!" }),
+      n("p", { class: "closing fade-up", html: "이것으로 에고너츠 《사랑과 이기심》 토론을 마치겠습니다!<br/>함께 자리해주셔서 감사합니다!" }),
       n("hr", { class: "gold-rule" }),
       n("p", { class: "books-label fade-up", text: "추천 도서 · 에리히 프롬" }),
       n("div", { class: "books fade-up" }, [
